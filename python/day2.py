@@ -9,7 +9,7 @@ def benchmark(func):
         times = []
         result = 0
         for i in range(10):
-            print(f"{func.__name__} iteration #{i}...", end='')
+            print(f"{func.__name__} iteration #{i}...", end="")
             start = time.perf_counter()
             result = func(*args, **kwargs)
             end = time.perf_counter()
@@ -41,6 +41,7 @@ def solve_part1(input):
         ]
     )
 
+
 @benchmark
 def solve_part2_brute(input):
     return sum(
@@ -69,8 +70,8 @@ def solve_part2(input):
         if (
             ok
             or is_safe(level[:i] + level[i + 1 :])[0]
-            or is_safe(level[: i - 1] + level[i:])[0]
             or is_safe(level[: i + 1] + level[i + 2 :])[0]
+            or i > 0 and is_safe(level[: i - 1] + level[i:])[0]
         ):
             sum += 1
     return sum
