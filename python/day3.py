@@ -9,7 +9,6 @@ def solve_part1(input):
 
 
 def solve_part2(input):
-    print(len(input))
     sum = 0
     enabled = True
     for m in re.findall(r"(mul\((\d+),(\d+)\))|(do(n't)?\(\))", input):
