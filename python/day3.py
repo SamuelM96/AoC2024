@@ -1,10 +1,12 @@
 import re
 
+
 def solve_part1(input):
     sum = 0
     for match in re.findall(r"(mul\((\d+),(\d+)\))", input):
-        sum += int(match[1])*int(match[2])
-    print("Part 1:", sum)
+        sum += int(match[1]) * int(match[2])
+    return sum
+
 
 def solve_part2(input):
     print(len(input))
@@ -18,12 +20,13 @@ def solve_part2(input):
                 enabled = False
             case _:
                 if enabled:
-                    sum += int(m[1])*int(m[2])
-    print("Part 2:", sum)
+                    sum += int(m[1]) * int(m[2])
+    return sum
 
 
-with open("day3.input", 'r') as f:
-    input = f.read()
+if __name__ == "__main__":
+    with open("day3.input", "r") as f:
+        input = f.read()
 
-solve_part1(input)
-solve_part2(input)
+    print("Part 1:", solve_part1(input))
+    print("Part 2:", solve_part2(input))
