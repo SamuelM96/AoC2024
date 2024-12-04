@@ -14,15 +14,10 @@ def solve_part1(data):
                 continue
             for dx, dy in directions:
                 for i, c in enumerate("XMAS"):
-                    px = x + i * dx
-                    py = y + i * dy
-                    if (
-                        px < 0
-                        or px >= width
-                        or py < 0
-                        or py >= height
-                        or data[py][px] != c
-                    ):
+                    px, py = x + i * dx, y + i * dy
+                    if (px < 0 or px >= width
+                        or py < 0 or py >= height
+                        or data[py][px] != c):
                         break
                 else:
                     count += 1
@@ -44,10 +39,11 @@ def solve_part2(data):
     )
 
 
-with open("day4.input", "r") as f:
-    input = f.read()
+if __name__ == "__main__":
+    with open("day4.input", "r") as f:
+        input = f.read()
 
-data = [[c for c in line] for line in input.splitlines()]
+    data = [line for line in input.splitlines()]
 
-print(f"Part 1: {solve_part1(data)}")
-print(f"Part 2: {solve_part2(data)}")
+    print(f"Part 1: {solve_part1(data)}")
+    print(f"Part 2: {solve_part2(data)}")
