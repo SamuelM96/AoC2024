@@ -7,7 +7,7 @@ def solve_part1(data):
     width = len(data[0])
     height = len(data)
 
-    sum = 0
+    count = 0
     for y in range(height):
         for x in range(width):
             if data[y][x] != "X":
@@ -25,29 +25,23 @@ def solve_part1(data):
                     ):
                         break
                 else:
-                    sum += 1
+                    count += 1
 
-    return sum
+    return count
 
 
 def solve_part2(data):
-    sum = 0
-    for y in range(1, len(data) - 1):
-        for x in range(1, len(data[0]) - 1):
-            if data[y][x] != "A":
-                continue
-            count = 0
-            if data[y - 1][x - 1] == "M" and data[y + 1][x + 1] == "S":
-                count += 1
-            if data[y + 1][x - 1] == "M" and data[y - 1][x + 1] == "S":
-                count += 1
-            if data[y - 1][x - 1] == "S" and data[y + 1][x + 1] == "M":
-                count += 1
-            if data[y + 1][x - 1] == "S" and data[y - 1][x + 1] == "M":
-                count += 1
-            sum += 1 if count == 2 else 0
-
-    return sum
+    return sum(
+        sum(
+            all(data[y + dy][x + dx] == p[i] for i, (dx, dy) in enumerate(d))
+            for p in [("M", "S"), ("S", "M")]
+            for d in [((-1, -1), (1, 1)), ((-1, 1), (1, -1))]
+        )
+        == 2
+        for y in range(1, len(data) - 1)
+        for x in range(1, len(data[0]) - 1)
+        if data[y][x] == "A"
+    )
 
 
 with open("day4.input", "r") as f:
