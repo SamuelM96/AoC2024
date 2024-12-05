@@ -38,8 +38,6 @@ def solve_part2_naive(updates, rules):
                     valid = False
                     i = 0
                     break
-            else:
-                continue
         if not valid:
             corrected.append(update)
 
