@@ -59,6 +59,7 @@ def find_guard(map):
     return 0, 0
 
 
+# A modified version of part 1 which exits early as soon as a loop is detected
 def walk(map, x, y):
     width, height = len(map[0]), len(map)
     dir = 0
@@ -71,9 +72,9 @@ def walk(map, x, y):
             x, y = x - dx, y - dy
             dir = (dir + 1) % 4
             dx, dy = DIRS[dir]
-        elif current == "+":
-            if map[y + dy][x + dx] in ["#", "O"]:
-                return True
+        elif current == "+" and map[y + dy][x + dx] in ["#", "O"]:
+            # Hit a barrier and we've walked here twice already => looped
+            return True
 
         visited[(x, y)] = ("|" if dir in (0, 2) else "-") if current == "." else "+"
         y, x = y + dy, x + dx
