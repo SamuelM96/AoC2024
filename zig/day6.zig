@@ -1,13 +1,5 @@
 const std = @import("std");
 
-const DIRS = [_]Vec{
-    .{ .x = 0, .y = -1 }, // ^
-    .{ .x = 1, .y = 0 }, // >
-    .{ .x = 0, .y = 1 }, // V
-    .{ .x = -1, .y = 0 }, // <
-};
-var iter: usize = 0;
-
 const Vec = struct {
     const Self = @This();
 
@@ -35,15 +27,20 @@ const Vec = struct {
         return .{ .x = self.x - other.x, .y = self.y - other.y };
     }
 
-    inline fn mul(self: Self, value: anytype) Self {
-        const k: isize = @intCast(value);
-        return .{ .x = self.x * k, .y = self.y * k };
-    }
-
     inline fn eql(self: Self, other: Self) bool {
         return self.x == other.x and self.y == other.y;
     }
 };
+
+const DIRS = [_]Vec{
+    .{ .x = 0, .y = -1 }, // ^
+    .{ .x = 1, .y = 0 }, // >
+    .{ .x = 0, .y = 1 }, // V
+    .{ .x = -1, .y = 0 }, // <
+};
+const BACKGROUND = '.';
+const BARRIER = '#';
+const OBSTACLE = 'O';
 
 pub fn main() !void {
     var gpa = std.heap.GeneralPurposeAllocator(.{}){};
@@ -63,7 +60,7 @@ pub fn main() !void {
     const result = try solvePart2(allocator, input, width, height);
     const elapsed_ns = timer.read();
     const elapsed = @as(f64, @floatFromInt(elapsed_ns)) / std.time.ns_per_s;
-    std.debug.print("Part 2: {d:<3} =>  {d:.6} seconds\n", .{ result, elapsed });
+    std.debug.print("Part 2: {d:<3}  =>  {d:.6} seconds\n", .{ result, elapsed });
 }
 
 fn solvePart1(allocator: std.mem.Allocator, map: []const u8, width: usize, height: usize) !struct { usize, std.AutoHashMap(Vec, void) } {
@@ -72,7 +69,7 @@ fn solvePart1(allocator: std.mem.Allocator, map: []const u8, width: usize, heigh
     var sum: usize = 0;
     var dir: usize = 0;
     while (0 <= guard.x and guard.x < width and 0 <= guard.y and guard.y < height) {
-        if (map[guard.toIndex(width)] == '#') {
+        if (map[guard.toIndex(width)] == BARRIER) {
             guard = guard.sub(DIRS[dir]);
             dir = (dir + 1) % 4;
         } else if (!visited.contains(guard)) {
@@ -89,7 +86,7 @@ fn solvePart2(allocator: std.mem.Allocator, map: []u8, width: usize, height: usi
     _, const walked = try solvePart1(allocator, map, width, height);
 
     const guard = findGuard(map, width);
-    map[guard.toIndex(width)] = '.';
+    map[guard.toIndex(width)] = BACKGROUND;
 
     var visited = std.AutoHashMap(Vec, u8).init(allocator);
     try visited.ensureTotalCapacity(8192);
@@ -100,13 +97,12 @@ fn solvePart2(allocator: std.mem.Allocator, map: []u8, width: usize, height: usi
             if (guard.eql(pos) or !walked.contains(pos)) continue;
             const i = pos.toIndex(width);
             const prev = map[i];
-            map[i] = 'O';
+            map[i] = OBSTACLE;
             sum += @intFromBool(try walk(map, width, height, guard, &visited));
             visited.clearRetainingCapacity();
             map[i] = prev;
         }
     }
-    std.debug.print("Iter: {d}\n", .{iter});
     return sum;
 }
 
@@ -120,21 +116,20 @@ fn walk(map: []const u8, width: usize, height: usize, guard: Vec, visited: *std.
     var g = guard;
     var dir: usize = 0;
     while (0 <= g.x and g.x < width and 0 <= g.y and g.y < height) {
-        iter += 1;
         var d = DIRS[dir];
         const current = try visited.getOrPutValue(g, map[g.toIndex(width)]);
         const value: u8 = current.value_ptr.*;
 
-        if (value == '#' or value == 'O') {
+        if (value == BARRIER or value == OBSTACLE) {
             g = g.sub(d);
             dir = (dir + 1) % 4;
             d = DIRS[dir];
         } else if (value == '+') {
             const next = map[g.add(d).toIndex(width)];
-            if (next == '#' or next == 'O') return true;
+            if (next == BARRIER or next == OBSTACLE) return true;
         }
 
-        try visited.put(g, if (value == '.') (if (dir == 0 or dir == 2) '|' else '-') else '+');
+        try visited.put(g, if (value == BACKGROUND) (if (dir == 0 or dir == 2) '|' else '-') else '+');
         g = g.add(d);
     }
 
