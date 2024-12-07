@@ -39,23 +39,15 @@ def solve_part2(map):
 
     width, height = len(map[0]), len(map)
     count = 0
-    times = []
     for y in range(height):
         for x in range(width):
             if gy == y and gx == x or (x,y) not in walked:
                 continue
             prev = map[y][x]
             map[y][x] = "O"
-            start = time.perf_counter()
             looped = walk(map, gx, gy)
-            end = time.perf_counter()
-            times.append(end - start)
-            print(f" => {times[-1]:.6f} seconds")
             count += 1 if looped else 0
             map[y][x] = prev
-    print(f"  Min: {min(times):.6f} seconds")
-    print(f"  Max: {max(times):.6f} seconds")
-    print(f"  Avg: {sum(times)/len(times):.6f} seconds")
 
     return count
 
@@ -97,4 +89,7 @@ if __name__ == "__main__":
 
     map = [list(row) for row in input.splitlines()]
     print("Part 1:", solve_part1(map)[0])
-    print("Part 2:", solve_part2(map))
+    start = time.perf_counter()
+    result = solve_part2(map)
+    end = time.perf_counter()
+    print(f"Part 2: {result} => {end-start:.6f} seconds")
