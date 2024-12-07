@@ -42,11 +42,9 @@ def solve_part2(input):
         # Pre-allocating the list didn't seem to have much of an
         # effect in python
         stack = [(nums[0], 0)]
-        i = 0
 
-        while i >= 0:
-            val, idx = stack[i]
-            i -= 1
+        while stack:
+            val, idx = stack.pop()
 
             if idx == len(nums) - 1:
                 if val == goal:
@@ -55,15 +53,9 @@ def solve_part2(input):
                 continue
 
             next_num = nums[idx + 1]
-            if i + 3 >= len(stack):  # Extend stack if needed
-                stack.extend([(0, 0)] * (i + 3 - len(stack) + 1))
-
-            i += 1
-            stack[i] = (val + next_num, idx + 1)
-            i += 1
-            stack[i] = (val * next_num, idx + 1)
-            i += 1
-            stack[i] = (val * digits[idx + 1] + next_num, idx + 1)
+            stack.append((val + next_num, idx + 1))
+            stack.append((val * next_num, idx + 1))
+            stack.append((val * digits[idx + 1] + next_num, idx + 1))
 
     return count
 
