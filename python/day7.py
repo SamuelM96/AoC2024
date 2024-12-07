@@ -5,20 +5,17 @@ def part1(nums, goal, pos, value):
     if pos == len(nums) - 1:
         return value == goal
     num = nums[pos + 1]
-    return part1(nums, goal, pos + 1, value + num) or part1(
-        nums, goal, pos + 1, value * num
-    )
+    return (part1(nums, goal, pos + 1, value + num)
+         or part1( nums, goal, pos + 1, value * num))
 
 
 def part2(nums, goal, pos, value):
     if pos == len(nums) - 1:
         return value == goal
     num = nums[pos + 1]
-    return (
-        part2(nums, goal, pos + 1, value + num)
-        or part2(nums, goal, pos + 1, value * num)
-        or part2(nums, goal, pos + 1, value * (10 ** len(str(num))) + num)
-    )
+    return (part2(nums, goal, pos + 1, value + num)
+         or part2(nums, goal, pos + 1, value * num)
+         or part2(nums, goal, pos + 1, value * (10 ** len(str(num))) + num))
 
 
 def solve(input, check):
@@ -34,7 +31,7 @@ def solve(input, check):
         # Likely because the stack allocation for function frames are trivial
         # and common enough to be optimised, whereas data structures have
         # additional overhead (hashing + allocations). Pre-allocation helps a bit,
-        # but still lost the recursive option.
+        # but still lost to the recursive option.
         #
         # Only potential downside is running out of stack space if recursion gets
         # too deep, but it's fine in this case.
