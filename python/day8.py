@@ -1,11 +1,10 @@
-from collections import defaultdict
 import time
 
 
 def solve(map: list, extend: bool):
     points = get_points(map)
     height, width = len(map), len(map[0])
-    antinodes = defaultdict(set)
+    antinodes = set()
     total = len(points)
 
     if extend:
@@ -18,7 +17,7 @@ def solve(map: list, extend: bool):
             dx, dy = x1 - x2, y1 - y2
             px, py = x1 + dx, y1 + dy
             while 0 <= px < width and 0 <= py < height:
-                antinodes[(px, py)].add(c1)
+                antinodes.add((px, py))
                 if not extend:
                     break
                 if map[py][px] == ".":
