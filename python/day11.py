@@ -1,15 +1,13 @@
+import functools
 import time
 from math import log10
 
-cache = {}
 
 def solve(input: list, n: int):
-    total = 0
-    for stone in input:
-        total += blink(stone, n)
-    return total
+    return sum(blink(stone, n) for stone in input)
 
 
+cache = {}
 # The caching behaviour can be simplified with @functools.cache,
 # but I'm doing it manually for learning purposes
 def blink(stone: int, depth: int):
@@ -32,6 +30,22 @@ def blink(stone: int, depth: int):
         value = blink(stone * 2024, depth - 1)
     cache[key] = value
     return value
+
+
+# Just documenting what the @functools.cache version would be
+@functools.cache
+def blink_functools(stone: int, depth: int):
+    if depth == 0:
+        return 1
+    if stone == 0:
+        return blink(1, depth - 1)
+    elif stone > 9:
+        # n = number of digits (avoids string operations)
+        n, m = divmod(int(log10(stone)) + 1, 2)
+        if m % 2 == 0:
+            a, b = divmod(stone, 10**n)
+            return blink(a, depth - 1) + blink(b, depth - 1)
+    return blink(stone * 2024, depth - 1)
 
 
 if __name__ == "__main__":
