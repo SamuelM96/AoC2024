@@ -44,7 +44,7 @@ def solve_part2(input):
 
 def blobify(input):
     width, height = len(input[0]), len(input)
-    stack = [(0, 0)]
+    stack = set([(0, 0)])
     seen = set()
     blobs = []
     while stack:
@@ -57,7 +57,7 @@ def blobify(input):
         surrounding = flood(input, blob, x, y)
         blobs.append((blob, surrounding))
         seen |= blob
-        stack.extend(surrounding)
+        stack.update(surrounding)
     return blobs
 
 
