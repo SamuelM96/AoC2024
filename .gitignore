@@ -182,3 +182,5 @@ docgen_tmp/
 
 # AoC input
 *.input
+puzzle.md
+input
