@@ -184,3 +184,4 @@ docgen_tmp/
 *.input
 puzzle.md
 input
+*.pbm
